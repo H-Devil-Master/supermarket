@@ -15,18 +15,20 @@
             <h1>注册</h1>
           </div>
           <div class="input-box">
-            <input type="text" v-model="user" placeholder="用户名" id="registered-user" name="user">
-            <input type="password" v-model="password" placeholder="密码" id="registered-psw1" ref="registeredPswA" name="password">
+            <input type="text" v-model="username" placeholder="用户名" id="registered-user" name="user">
+            <input type="password" v-model="password" placeholder="密码" id="registered-psw1" ref="registeredPswA"
+                   name="password">
             <span id="toggleBtn01" ref="toggleBtnA" @click="toggleBtnA" class="hide"></span>
-            <input type="password" v-model="password1" placeholder="确认密码" id="registered-psw2" ref="registeredPswB" name="password">
-            <span id="toggleBtn02" ref="toggleBtnB" @click="toggleBtnB" class="hide"></span>
+
             <div class="verify">
-              <input v-model="code" type="text" name="verify" class="newCode" placeholder="请输入验证码" required
-                     oninvalid="setCustomValidity('请输入正确的验证码')" oninput="setCustomValidity('');">
+              <input v-model="email" type="email" name="verify" class="newCode" placeholder="输入邮箱" required>
               <div class="code">
-                <img @click="freshCode" :src="imageUrl">
+                <div class="codeText" @click="sendCode">发送验证码</div>
               </div>
             </div>
+
+            <!--            <span id="toggleBtn02" ref="toggleBtnB" @click="toggleBtnB" class="hide"></span>-->
+            <input type="text" v-model="activationCode" placeholder="邮箱验证码" name="code">
           </div>
           <div class="btn-box">
             <button id="loginr" @click="registe">注册</button>
@@ -41,11 +43,12 @@
             <h1>登录</h1>
           </div>
           <div class="input-box">
-            <input type="text" id="login-user" placeholder="用户名" name="user" required>
-            <input type="password" id="login-psw" ref="loginPsw" placeholder="密码" name="user" required>
+            <input type="text" v-model="username" id="login-user" placeholder="用户名" name="user" required>
+            <input type="password" v-model="password" id="login-psw" ref="loginPsw" placeholder="密码" name="user"
+                   required>
             <span id="toggleBtn" @click="toggleBtnC" ref="toggleBtn" class="hide"></span>
             <div class="verify">
-              <input type="text" name="verify" class="newCode" placeholder="请输入验证码" required
+              <input type="text" v-model="activationCode" name="verify" class="newCode" placeholder="请输入验证码" required
                      oninvalid="setCustomValidity('请输入正确的验证码')" oninput="setCustomValidity('');">
               <div class="code">
                 <img @click="freshCode" :src="imageUrl">
@@ -53,7 +56,7 @@
             </div>
           </div>
           <div class="btn-box">
-            <button id="register">登录</button>
+            <button id="register" @click="userLogin">登录</button>
             <p id="enter" @click="register">没有账号？去注册</p>
           </div>
         </div>
@@ -63,17 +66,19 @@
 </template>
 
 <script>
-import {login,kaptcha,userRegister} from "@/api";
+import {userLogin, kaptcha, userRegister, resqustMailKaptcha} from "@/api";
 import axios from "axios";
+
 export default {
   name: "login",
   data() {
     return {
       imageUrl: 'http://192.168.96.211:8080/kaptcha?q=',
-      user:'',
-      password:null,
-      password1:null,
-      code:''
+      username: '',
+      password: null,
+      password1: null,
+      email: null,
+      activationCode: ''
     }
   },
   mounted() {
@@ -123,29 +128,47 @@ export default {
     toggleBtnC() {
       this.changeEyes(this.$refs.toggleBtn, this.$refs.loginPsw)
     },
+    //图片验证码
     async freshCode() {
+      document.cookie = null;
       let resout = await kaptcha()
-      console.log(resout)
       this.imageUrl += 'e';
-      console.log(document.cookie)
     },
-    registe(){
-      const {user,password,password1,code} = this;
-      /*try {
-        const {user,password,password1,code} = this;
-        let result = await userRegister({user,password,password1,code})
+    //注册
+    async registe() {
+      try {
+        const {username, password, email, activationCode} = this;
+        console.log({username, password, email, activationCode})
+        const result = await userRegister({username, password, email, activationCode})
         console.log(result)
+      } catch (err) {
+        console.log(err.message)
+      }
+    },
+    //发送邮件验证码
+    async sendCode() {
+      try {
+        let code = this.email
+        const result = await resqustMailKaptcha(code)
+        console.log(result)
+      } catch (err) {
+        console.log(err.message)
+      }
+    },
+    //登录
+    async userLogin() {
+      try {
+        const {username, password, activationCode} = this;
+        let result = await userLogin({username, password, activationCode});
+        console.log(result)
+        if (result.status==200){
+          localStorage.setItem('token', result.data);
+        }
       }catch (err){
         console.log(err.message)
-      }*/
-      axios.post('http://192.168.96.211:8080/register',{user,password,password1,code}).then(function (response) {
-        console.log(response);
-      })
-          .catch(function (error) {
-            console.log(error);
-          });
+      }
     }
-  }
+  },
 }
 </script>
 <style scoped>
@@ -326,10 +349,12 @@ button:hover {
   font-weight: bold;
   margin-left: 10px;
 }
+
 .code img {
   width: 100%;
   height: 100%;
 }
+
 input {
   outline: none;
 }
@@ -411,5 +436,12 @@ input {
   left: 185px;
   color: red;
   display: none;
+}
+
+.codeText {
+  font-size: 13px;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
 }
 </style>

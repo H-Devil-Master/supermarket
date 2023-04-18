@@ -14,6 +14,18 @@ export default new VueRouter({
             meta:{show: false}
         },
         {
+            path:'/user',
+            component:()=>import('@/views/User.vue'),
+            meta:{show: false},
+            children:[
+                {
+                    path:'UserManagement',
+                    component:()=>import('@/views/UserManagement.vue'),
+                    meta:{show: false},
+                }
+            ]
+        },
+        {
             path:'*',
             redirect:'/login'
         }
