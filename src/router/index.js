@@ -14,6 +14,21 @@ export default new VueRouter({
             meta:{show: false}
         },
         {
+            path:'/shopDetails',
+            component:()=>import('@/views/ShopDetails.vue'),
+            meta:{show: false}
+        },
+        {
+            path:'/shopCar',
+            component:()=>import('@/views/ShopCar.vue'),
+            meta:{show: false}
+        },
+        {
+            path:'/orderConfirmation',
+            component:()=>import('@/views/OrderConfirmation.vue'),
+            meta:{show: false}
+        },
+        {
             path:'/user',
             component:()=>import('@/views/User.vue'),
             meta:{show: false},
