@@ -25,6 +25,19 @@
           <p>上次登录时间：<span>2023-4-17</span></p>
           <p>上次登录地点：<span>重庆</span></p>
         </div>
+
+        <div class="mycalender">
+        <el-calendar>
+          <!-- 这里使用的是 2.5 slot 语法，对于新项目请使用 2.6 slot 语法-->
+          <template
+              slot="dateCell"
+              slot-scope="{date, data}">
+            <p :class="data.isSelected ? 'is-selected' : ''">
+              {{ data.day.split('-').slice(1).join('-') }} {{ data.isSelected ? '✔️' : ''}}
+            </p>
+          </template>
+        </el-calendar>
+        </div>
       </el-card>
       </el-col>
 
@@ -176,13 +189,14 @@ export default {
     handleEdit(index, row) {
       this.dialogVisible = true;
       this.userId = row.userId
-      const {username,password,email,headerUrl} = this
+      // const {username,password,email,headerUrl} = this
       console.log(index, row);
     },
     handleDelete(index, row) {
       const userId = row.userId
       console.log(userId)
       const result = requestDeleteUser(userId)
+      console.log(result)
       requestSelectUser(userId)
       console.log(index, row);
     }
@@ -257,5 +271,14 @@ export default {
 .eidecotent{
   margin-top: 20px;
 }
-
+.is-selected {
+  color: #1989FA;
+}
+.mycalender{
+  font-size: 12px;
+}
+.mycalender /deep/  .el-calendar-table .el-calendar-day{
+  width: 60px;
+  height: 34px;
+}
 </style>

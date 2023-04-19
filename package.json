@@ -13,6 +13,7 @@
     "element-ui": "^2.15.13",
     "nprogress": "^0.2.0",
     "vue": "^2.6.14",
+    "vue-quill-editor": "^3.0.6",
     "vuex": "^3.6.2"
   },
   "devDependencies": {
@@ -23,6 +24,7 @@
     "@vue/cli-service": "~5.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-vue": "^8.0.3",
+    "lodash": "^4.17.21",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {

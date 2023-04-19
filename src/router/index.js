@@ -19,8 +19,13 @@ export default new VueRouter({
             meta:{show: false},
             children:[
                 {
-                    path:'UserManagement',
+                    path:'userManagement',
                     component:()=>import('@/views/UserManagement.vue'),
+                    meta:{show: false},
+                },
+                {
+                    path:'shopManagement',
+                    component:()=>import('@/views/ShopManagement.vue'),
                     meta:{show: false},
                 }
             ]

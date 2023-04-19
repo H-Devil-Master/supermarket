@@ -11,13 +11,15 @@
     <el-menu-item index="1">
       <i class="el-icon-s-home"></i>
       <span slot="title">
-        <router-link class="routerLink" to="/user/UserManagement">首页</router-link>
+        <router-link class="routerLink" to="/user/userManagement">首页</router-link>
       </span>
     </el-menu-item>
     <el-submenu index="2">
       <template slot="title">
-        <i class="el-icon-location"></i>
-        <span slot="title">导航一</span>
+        <i class="el-icon-shopping-bag-1"></i>
+        <span slot="title">
+          <router-link class="routerLink" to="/user/shopManagement">商品</router-link>
+        </span>
       </template>
       <el-menu-item-group>
         <span slot="title">分组一</span>
